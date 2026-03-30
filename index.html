@@ -10,121 +10,183 @@
 <style>
 
 body{
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg,#0f3d73,#1f6fb2);
-padding:10px;
 margin:0;
+font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+background:linear-gradient(135deg,#eaf2ff,#f8fbff);
+color:#1a2a44;
 }
 
+/* CONTENEDOR */
 .container{
 max-width:1000px;
-margin:auto;
-background:white;
-padding:20px;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
+margin:25px auto;
+padding:30px;
+border-radius:22px;
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(15px);
+border:1px solid rgba(0,0,0,0.05);
+box-shadow:0 20px 40px rgba(0,0,0,0.08);
+animation:fadeIn 0.6s ease;
 }
 
+/* HEADER */
 .header{
 text-align:center;
-margin-bottom:10px;
+margin-bottom:30px;
 }
 
 .header h1{
-color:#1f4f82;
+font-size:30px;
 margin:0;
-font-size:28px;
+font-weight:700;
+letter-spacing:-0.5px;
+color:#1f6fb2;
 }
 
 .header h2{
-color:#3c6ea8;
-font-weight:normal;
 margin-top:5px;
-font-size:18px;
+font-size:15px;
+opacity:0.6;
 }
 
+/* USUARIO */
+#titulo{
+margin-top:15px;
+font-size:14px;
+font-weight:500;
+color:#1f6fb2;
+opacity:0.8;
+text-align:center;
+}
+
+/* VERSICULO */
 .versiculo{
 background:#eef5ff;
-padding:8px 12px;
-border-left:5px solid #1f6fb2;
-border-radius:6px;
-margin-top:8px;
+padding:14px;
+border-radius:14px;
+margin-top:15px;
 font-style:italic;
 font-size:13px;
-color:#333;
 display:none;
 }
 
 .referencia{
-margin-top:4px;
-font-weight:bold;
-color:#1f4f82;
 font-size:12px;
+opacity:0.7;
+margin-top:5px;
 }
 
+/* TABLA */
 table{
 width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
-
-th,td{
-border:1px solid #ddd;
-padding:10px;
-text-align:center;
-font-size:14px;
-vertical-align:top;
+margin-top:25px;
+border-collapse:separate;
+border-spacing:0 22px;
 }
 
 th{
-background:#1f6fb2;
-color:white;
+font-size:13px;
+opacity:0.6;
+font-weight:600;
+padding-bottom:10px;
 }
 
+/* TARJETAS */
+tr{
+background:white;
+box-shadow:0 12px 25px rgba(0,0,0,0.06);
+border-radius:16px;
+overflow:hidden;
+}
+
+/* CELDAS */
+td{
+padding:16px;
+vertical-align:top;
+}
+
+/* DÍA COMPACTO */
 td:first-child{
-font-weight:bold;
-background:#f0f6ff;
+width:65px;
+min-width:65px;
+text-align:center;
+padding:10px 6px;
 }
 
+/* BADGE DÍA */
+.dia-badge{
+display:inline-block;
+padding:6px 10px;
+border-radius:10px;
+background:#eef5ff;
+color:#1f6fb2;
+font-size:11px;
+font-weight:600;
+}
+
+/* INPUTS */
 textarea{
 width:100%;
-padding:8px;
-border-radius:6px;
-border:1px solid #ccc;
+background:#f5f9ff;
+border:1px solid rgba(0,0,0,0.05);
+border-radius:12px;
+padding:12px;
+color:#1a2a44;
+resize:none;
 height:90px;
-resize:vertical;
-box-sizing:border-box;
-font-family:Arial;
-font-size:14px;
+font-size:13px;
+transition:0.2s;
+}
+
+textarea:focus{
+outline:none;
+border:1px solid #4da3ff;
+background:white;
+box-shadow:0 0 0 2px rgba(77,163,255,0.2);
+}
+
+/* PETICIÓN */
+.peticion{
+margin-top:30px;
+background:white;
+padding:18px;
+border-radius:16px;
+box-shadow:0 10px 20px rgba(0,0,0,0.05);
+}
+
+/* BOTONES */
+.botones{
+display:flex;
+gap:15px;
+margin-top:25px;
 }
 
 button{
-padding:14px 20px;
+flex:1;
+padding:15px;
 border:none;
-border-radius:8px;
-font-size:16px;
+border-radius:14px;
+font-size:15px;
+font-weight:600;
 cursor:pointer;
-width:48%;
+transition:0.25s;
+color:white;
 }
 
 .guardar{
-background:#3498db;
-color:white;
-}
-
-.guardar:hover{
-background:#2c80b4;
+background:linear-gradient(135deg,#4da3ff,#1f6fb2);
 }
 
 .enviar{
-background:#1f6fb2;
-color:white;
+background:linear-gradient(135deg,#1f6fb2,#0b3d91);
 }
 
-.enviar:hover{
-background:#184f82;
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(0,0,0,0.15);
 }
 
+/* LOGIN */
 .login{
 text-align:center;
 padding:30px 10px;
@@ -132,55 +194,53 @@ padding:30px 10px;
 
 .login input{
 padding:12px;
-font-size:16px;
+border:1px solid rgba(0,0,0,0.1);
+border-radius:12px;
+background:white;
+text-align:center;
 width:80%;
 max-width:250px;
 }
 
 .login button{
-background:#1f6fb2;
-color:white;
 margin-top:10px;
-width:auto;
 padding:12px 25px;
+background:linear-gradient(135deg,#1f6fb2,#0b3d91);
+color:white;
 }
 
-.botones{
-display:flex;
-justify-content:space-between;
-gap:10px;
-margin-top:20px;
+/* ANIMACIÓN */
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
-.peticion{
-margin-top:20px;
-text-align:left;
-background:#f5f9ff;
-padding:15px;
-border-radius:8px;
-}
+/* RESPONSIVE */
+@media(max-width:700px){
 
-@media (max-width:700px){
-
-th,td{
-font-size:12px;
-padding:6px;
-}
-
-.header h1{
-font-size:22px;
-}
-
-.header h2{
-font-size:16px;
-}
-
-button{
-font-size:15px;
+table{
+border-spacing:0 26px;
 }
 
 textarea{
 height:100px;
+font-size:12px;
+}
+
+td{
+display:block;
+width:100%;
+padding:10px 0;
+}
+
+tr{
+padding:15px;
 }
 
 }
@@ -200,16 +260,13 @@ height:100px;
 “Porque Dios no es injusto para olvidar vuestra obra…”
 <div class="referencia">Hebreos 6:10 RV 1960</div>
 </div>
-
 </div>
 
 <div id="login" class="login">
-
 <h3>Ingresar Usuario</h3>
 <input id="usuario" placeholder="Escribe tu usuario">
 <br>
 <button onclick="entrar()">Entrar</button>
-
 </div>
 
 <div id="app" style="display:none">
@@ -220,7 +277,7 @@ height:100px;
 <tr>
 <th>Día</th>
 <th>Lectura</th>
-<th>Oración</th>
+<th>Oración (min)</th>
 <th>Lo que Dios me habló</th>
 </tr>
 <tbody id="tabla"></tbody>
@@ -243,7 +300,7 @@ height:100px;
 
 <script>
 
-const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const dias=["Lun","Mar","Mié","Jue","Vie","Sáb"];
 let usuario="";
 
 window.onload=function(){
@@ -251,20 +308,14 @@ window.onload=function(){
 let usuarioGuardado=localStorage.getItem("usuario");
 
 if(usuarioGuardado){
-
 usuario=usuarioGuardado;
-
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
-
 document.getElementById("titulo").innerText="Usuario: "+usuario;
 document.getElementById("versiculo").style.display="block";
-
 crearTabla();
 setTimeout(cargarDatos,200);
-
 controlarEnvio();
-
 }
 
 }
@@ -287,7 +338,6 @@ document.getElementById("titulo").innerText="Usuario: "+usuario;
 document.getElementById("versiculo").style.display="block";
 
 crearTabla();
-
 controlarEnvio();
 
 }
@@ -300,7 +350,7 @@ dias.forEach(d=>{
 
 html+=`
 <tr>
-<td>${d}</td>
+<td><span class="dia-badge">${d}</span></td>
 <td><textarea id="${d}-lectura"></textarea></td>
 <td><textarea id="${d}-oracion"></textarea></td>
 <td><textarea id="${d}-dios"></textarea></td>
@@ -352,25 +402,24 @@ document.getElementById("peticion").value=datos["peticion"] || "";
 
 }
 
-// 🔒 CONTROL TIEMPO
+/* CONTROL ENVÍO */
+
 function controlarEnvio(){
 
-let tiempoGuardado = localStorage.getItem("tiempoEnvio");
+let tiempoGuardado=localStorage.getItem("tiempoEnvio");
 
 if(tiempoGuardado){
 
-let ahora = Date.now();
-let diferencia = ahora - parseInt(tiempoGuardado);
+let ahora=Date.now();
+let diferencia=ahora-parseInt(tiempoGuardado);
 
-if(diferencia < 60000){
+if(diferencia<60000){
 
 bloquearBoton();
 
-let restante = 60000 - diferencia;
+let restante=60000-diferencia;
 
-setTimeout(()=>{
-desbloquearBoton();
-}, restante);
+setTimeout(()=>{desbloquearBoton();},restante);
 
 }
 
@@ -383,7 +432,7 @@ function bloquearBoton(){
 let btn=document.querySelector(".enviar");
 
 btn.disabled=true;
-btn.innerText="Ya se ha enviado tu devocional";
+btn.innerText="Ya se ha enviado el devocional";
 btn.style.background="gray";
 
 }
@@ -394,21 +443,21 @@ let btn=document.querySelector(".enviar");
 
 btn.disabled=false;
 btn.innerText="Enviar";
-btn.style.background="#1f6fb2";
+btn.style.background="linear-gradient(135deg,#1f6fb2,#0b3d91)";
 
 localStorage.removeItem("tiempoEnvio");
 
 }
 
-// 🚀 ENVIAR
+/* ENVIAR */
+
 function enviar(){
 
-let btn = document.querySelector(".enviar");
+let btn=document.querySelector(".enviar");
 
-// bloquear inmediato
-btn.disabled = true;
-btn.innerText = "Enviando...";
-btn.style.background = "gray";
+btn.disabled=true;
+btn.innerText="Enviando...";
+btn.style.background="gray";
 
 let datos=[];
 let incompleto=false;
@@ -422,33 +471,22 @@ let lectura=document.getElementById(d+"-lectura").value.trim();
 let oracion=document.getElementById(d+"-oracion").value.trim();
 let dios=document.getElementById(d+"-dios").value.trim();
 
-if(!lectura || !oracion || !dios){
-incompleto=true;
-}
+if(!lectura || !oracion || !dios) incompleto=true;
 
-if(!/^\d+$/.test(oracion)){
-errorOracion=true;
-}
+if(!/^\d+$/.test(oracion)) errorOracion=true;
 
-datos.push({
-usuario:usuario,
-dia:d,
-lectura:lectura,
-oracion:oracion,
-dios:dios,
-peticion:peticion
-});
+datos.push({usuario,dia:d,lectura,oracion,dios,peticion});
 
 });
 
 if(incompleto){
-alert("Debes llenar todos los campos antes de enviar");
+alert("Llena todos los campos");
 desbloquearBoton();
 return;
 }
 
 if(errorOracion){
-alert("Solo puedes escribir minutos y no letras en la oración");
+alert("No puedes escribir letras en oración");
 desbloquearBoton();
 return;
 }
@@ -459,15 +497,10 @@ body:JSON.stringify(datos)
 })
 .then(r=>r.text())
 .then(()=>{
-
-alert("Datos enviados correctamente");
-
-localStorage.setItem("tiempoEnvio", Date.now());
-
+alert("Enviado correctamente");
+localStorage.setItem("tiempoEnvio",Date.now());
 bloquearBoton();
-
 localStorage.removeItem("datos");
-
 })
 .catch(()=>{
 alert("Error al enviar");
