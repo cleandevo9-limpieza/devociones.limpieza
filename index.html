@@ -263,7 +263,6 @@ document.getElementById("versiculo").style.display="block";
 crearTabla();
 setTimeout(cargarDatos,200);
 
-// 🔥 controlar tiempo de envío
 controlarEnvio();
 
 }
@@ -289,7 +288,6 @@ document.getElementById("versiculo").style.display="block";
 
 crearTabla();
 
-// 🔥 controlar tiempo
 controlarEnvio();
 
 }
@@ -354,7 +352,7 @@ document.getElementById("peticion").value=datos["peticion"] || "";
 
 }
 
-// 🔒 CONTROL DE TIEMPO
+// 🔒 CONTROL TIEMPO
 function controlarEnvio(){
 
 let tiempoGuardado = localStorage.getItem("tiempoEnvio");
@@ -385,7 +383,7 @@ function bloquearBoton(){
 let btn=document.querySelector(".enviar");
 
 btn.disabled=true;
-btn.innerText="Ahora no puedes enviar mas";
+btn.innerText="Ya se ha enviado tu devocional";
 btn.style.background="gray";
 
 }
@@ -404,6 +402,13 @@ localStorage.removeItem("tiempoEnvio");
 
 // 🚀 ENVIAR
 function enviar(){
+
+let btn = document.querySelector(".enviar");
+
+// bloquear inmediato
+btn.disabled = true;
+btn.innerText = "Enviando...";
+btn.style.background = "gray";
 
 let datos=[];
 let incompleto=false;
@@ -438,11 +443,13 @@ peticion:peticion
 
 if(incompleto){
 alert("Debes llenar todos los campos antes de enviar");
+desbloquearBoton();
 return;
 }
 
 if(errorOracion){
 alert("Solo puedes escribir minutos y no letras en la oración");
+desbloquearBoton();
 return;
 }
 
@@ -455,13 +462,16 @@ body:JSON.stringify(datos)
 
 alert("Datos enviados correctamente");
 
-// 🔒 guardar tiempo
 localStorage.setItem("tiempoEnvio", Date.now());
 
 bloquearBoton();
 
 localStorage.removeItem("datos");
 
+})
+.catch(()=>{
+alert("Error al enviar");
+desbloquearBoton();
 });
 
 }
