@@ -43,8 +43,6 @@ margin-top:5px;
 font-size:18px;
 }
 
-/* VERSICULO MAS COMPACTO */
-
 .versiculo{
 background:#eef5ff;
 padding:8px 12px;
@@ -87,8 +85,6 @@ td:first-child{
 font-weight:bold;
 background:#f0f6ff;
 }
-
-/* TEXTAREAS GRANDES */
 
 textarea{
 width:100%;
@@ -164,8 +160,6 @@ padding:15px;
 border-radius:8px;
 }
 
-/* RESPONSIVE */
-
 @media (max-width:700px){
 
 th,td{
@@ -203,10 +197,8 @@ height:100px;
 <h2>Registro Devocional Semanal</h2>
 
 <div id="versiculo" class="versiculo">
-“Porque Dios no es injusto para olvidar vuestra obra y el trabajo de amor que habéis mostrado hacia su nombre, habiendo servido a los santos y sirviéndoles aún.”
-<div class="referencia">
-Hebreos 6:10 — Reina-Valera 1960
-</div>
+“Porque Dios no es injusto para olvidar vuestra obra…”
+<div class="referencia">Hebreos 6:10</div>
 </div>
 
 </div>
@@ -214,11 +206,8 @@ Hebreos 6:10 — Reina-Valera 1960
 <div id="login" class="login">
 
 <h3>Ingresar Usuario</h3>
-
 <input id="usuario" placeholder="Escribe tu usuario">
-
 <br>
-
 <button onclick="entrar()">Entrar</button>
 
 </div>
@@ -228,34 +217,24 @@ Hebreos 6:10 — Reina-Valera 1960
 <h3 id="titulo"></h3>
 
 <table>
-
 <tr>
 <th>Día</th>
 <th>Lectura</th>
 <th>Oración</th>
 <th>Lo que Dios me habló</th>
 </tr>
-
 <tbody id="tabla"></tbody>
-
 </table>
 
 <div class="peticion">
-
 <strong>Petición de oración</strong>
-
 <br><br>
-
-<textarea id="peticion" placeholder="Escribe aquí tu petición de oración"></textarea>
-
+<textarea id="peticion"></textarea>
 </div>
 
 <div class="botones">
-
 <button class="guardar" onclick="guardar()">Guardar</button>
-
 <button class="enviar" onclick="enviar()">Enviar</button>
-
 </div>
 
 </div>
@@ -264,15 +243,7 @@ Hebreos 6:10 — Reina-Valera 1960
 
 <script>
 
-const dias=[
-"Lunes",
-"Martes",
-"Miércoles",
-"Jueves",
-"Viernes",
-"Sábado"
-];
-
+const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
 let usuario="";
 
 window.onload=function(){
@@ -287,12 +258,13 @@ document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
 
 document.getElementById("titulo").innerText="Usuario: "+usuario;
-
 document.getElementById("versiculo").style.display="block";
 
 crearTabla();
-
 setTimeout(cargarDatos,200);
+
+// 🔥 controlar tiempo de envío
+controlarEnvio();
 
 }
 
@@ -313,10 +285,12 @@ document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
 
 document.getElementById("titulo").innerText="Usuario: "+usuario;
-
 document.getElementById("versiculo").style.display="block";
 
 crearTabla();
+
+// 🔥 controlar tiempo
+controlarEnvio();
 
 }
 
@@ -328,15 +302,10 @@ dias.forEach(d=>{
 
 html+=`
 <tr>
-
 <td>${d}</td>
-
 <td><textarea id="${d}-lectura"></textarea></td>
-
 <td><textarea id="${d}-oracion"></textarea></td>
-
 <td><textarea id="${d}-dios"></textarea></td>
-
 </tr>
 `;
 
@@ -353,11 +322,9 @@ let data={};
 dias.forEach(d=>{
 
 data[d]={
-
 lectura:document.getElementById(d+"-lectura").value,
 oracion:document.getElementById(d+"-oracion").value,
 dios:document.getElementById(d+"-dios").value
-
 }
 
 });
@@ -373,75 +340,125 @@ alert("Progreso guardado");
 function cargarDatos(){
 
 let datos=JSON.parse(localStorage.getItem("datos"));
-
 if(!datos) return;
 
 dias.forEach(d=>{
-
 if(datos[d]){
-
 document.getElementById(d+"-lectura").value=datos[d].lectura || "";
 document.getElementById(d+"-oracion").value=datos[d].oracion || "";
 document.getElementById(d+"-dios").value=datos[d].dios || "";
-
 }
-
 });
 
 document.getElementById("peticion").value=datos["peticion"] || "";
 
 }
 
+// 🔒 CONTROL DE TIEMPO
+function controlarEnvio(){
+
+let tiempoGuardado = localStorage.getItem("tiempoEnvio");
+
+if(tiempoGuardado){
+
+let ahora = Date.now();
+let diferencia = ahora - parseInt(tiempoGuardado);
+
+if(diferencia < 60000){
+
+bloquearBoton();
+
+let restante = 60000 - diferencia;
+
+setTimeout(()=>{
+desbloquearBoton();
+}, restante);
+
+}
+
+}
+
+}
+
+function bloquearBoton(){
+
+let btn=document.querySelector(".enviar");
+
+btn.disabled=true;
+btn.innerText="Ahora no puedes enviar mas";
+btn.style.background="gray";
+
+}
+
+function desbloquearBoton(){
+
+let btn=document.querySelector(".enviar");
+
+btn.disabled=false;
+btn.innerText="Enviar";
+btn.style.background="#1f6fb2";
+
+localStorage.removeItem("tiempoEnvio");
+
+}
+
+// 🚀 ENVIAR
 function enviar(){
 
 let datos=[];
-
 let incompleto=false;
+let errorOracion=false;
 
 let peticion=document.getElementById("peticion").value;
 
 dias.forEach(d=>{
 
-let lectura=document.getElementById(d+"-lectura").value;
-let oracion=document.getElementById(d+"-oracion").value;
-let dios=document.getElementById(d+"-dios").value;
+let lectura=document.getElementById(d+"-lectura").value.trim();
+let oracion=document.getElementById(d+"-oracion").value.trim();
+let dios=document.getElementById(d+"-dios").value.trim();
 
 if(!lectura || !oracion || !dios){
-
 incompleto=true;
+}
 
+if(!/^\d+$/.test(oracion)){
+errorOracion=true;
 }
 
 datos.push({
-
 usuario:usuario,
 dia:d,
 lectura:lectura,
 oracion:oracion,
 dios:dios,
 peticion:peticion
-
 });
 
 });
 
 if(incompleto){
-
 alert("Debes llenar todos los campos antes de enviar");
-
 return;
+}
 
+if(errorOracion){
+alert("Solo puedes escribir minutos y no letras en la oración");
+return;
 }
 
 fetch("https://script.google.com/macros/s/AKfycbyPHJZ1WwdLSfnYCKoJmv2-r3iLS7Za7DBw-9BE-x5yFtuY_io_426fdFOPCd6cY1xnTw/exec",{
 method:"POST",
 body:JSON.stringify(datos)
 })
-
 .then(r=>r.text())
 .then(()=>{
 
 alert("Datos enviados correctamente");
+
+// 🔒 guardar tiempo
+localStorage.setItem("tiempoEnvio", Date.now());
+
+bloquearBoton();
 
 localStorage.removeItem("datos");
 
