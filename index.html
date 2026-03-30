@@ -16,7 +16,6 @@ background:linear-gradient(135deg,#eaf2ff,#f8fbff);
 color:#1a2a44;
 }
 
-/* CONTENEDOR */
 .container{
 max-width:1000px;
 margin:25px auto;
@@ -29,7 +28,6 @@ box-shadow:0 20px 40px rgba(0,0,0,0.08);
 animation:fadeIn 0.6s ease;
 }
 
-/* HEADER */
 .header{
 text-align:center;
 margin-bottom:30px;
@@ -49,7 +47,6 @@ font-size:15px;
 opacity:0.6;
 }
 
-/* USUARIO */
 #titulo{
 margin-top:15px;
 font-size:14px;
@@ -59,7 +56,6 @@ opacity:0.8;
 text-align:center;
 }
 
-/* VERSICULO */
 .versiculo{
 background:#eef5ff;
 padding:14px;
@@ -76,9 +72,14 @@ opacity:0.7;
 margin-top:5px;
 }
 
-/* TABLA */
+.tabla-container{
+width:100%;
+overflow-x:auto;
+}
+
 table{
 width:100%;
+min-width:600px;
 margin-top:25px;
 border-collapse:separate;
 border-spacing:0 22px;
@@ -91,7 +92,6 @@ font-weight:600;
 padding-bottom:10px;
 }
 
-/* TARJETAS */
 tr{
 background:white;
 box-shadow:0 12px 25px rgba(0,0,0,0.06);
@@ -99,13 +99,11 @@ border-radius:16px;
 overflow:hidden;
 }
 
-/* CELDAS */
 td{
 padding:16px;
 vertical-align:top;
 }
 
-/* DÍA COMPACTO */
 td:first-child{
 width:65px;
 min-width:65px;
@@ -113,7 +111,6 @@ text-align:center;
 padding:10px 6px;
 }
 
-/* BADGE DÍA */
 .dia-badge{
 display:inline-block;
 padding:6px 10px;
@@ -124,7 +121,6 @@ font-size:11px;
 font-weight:600;
 }
 
-/* INPUTS */
 textarea{
 width:100%;
 background:#f5f9ff;
@@ -145,7 +141,6 @@ background:white;
 box-shadow:0 0 0 2px rgba(77,163,255,0.2);
 }
 
-/* PETICIÓN */
 .peticion{
 margin-top:30px;
 background:white;
@@ -154,7 +149,6 @@ border-radius:16px;
 box-shadow:0 10px 20px rgba(0,0,0,0.05);
 }
 
-/* BOTONES */
 .botones{
 display:flex;
 gap:15px;
@@ -186,7 +180,6 @@ transform:translateY(-2px);
 box-shadow:0 10px 20px rgba(0,0,0,0.15);
 }
 
-/* LOGIN */
 .login{
 text-align:center;
 padding:30px 10px;
@@ -209,40 +202,9 @@ background:linear-gradient(135deg,#1f6fb2,#0b3d91);
 color:white;
 }
 
-/* ANIMACIÓN */
 @keyframes fadeIn{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-/* RESPONSIVE */
-@media(max-width:700px){
-
-table{
-border-spacing:0 26px;
-}
-
-textarea{
-height:100px;
-font-size:12px;
-}
-
-td{
-display:block;
-width:100%;
-padding:10px 0;
-}
-
-tr{
-padding:15px;
-}
-
+from{opacity:0; transform:translateY(20px);}
+to{opacity:1; transform:translateY(0);}
 }
 
 </style>
@@ -273,6 +235,7 @@ padding:15px;
 
 <h3 id="titulo"></h3>
 
+<div class="tabla-container">
 <table>
 <tr>
 <th>Día</th>
@@ -282,6 +245,7 @@ padding:15px;
 </tr>
 <tbody id="tabla"></tbody>
 </table>
+</div>
 
 <div class="peticion">
 <strong>Petición de oración</strong>
@@ -304,7 +268,6 @@ const dias=["Lun","Mar","Mié","Jue","Vie","Sáb"];
 let usuario="";
 
 window.onload=function(){
-
 let usuarioGuardado=localStorage.getItem("usuario");
 
 if(usuarioGuardado){
@@ -314,15 +277,13 @@ document.getElementById("app").style.display="block";
 document.getElementById("titulo").innerText="Usuario: "+usuario;
 document.getElementById("versiculo").style.display="block";
 crearTabla();
-setTimeout(cargarDatos,200);
+cargarDatos();
 controlarEnvio();
 }
-
 }
 
 function entrar(){
-
-usuario=document.getElementById("usuario").value;
+usuario=document.getElementById("usuario").value.trim();
 
 if(usuario==""){
 alert("Escribe un usuario");
@@ -339,54 +300,42 @@ document.getElementById("versiculo").style.display="block";
 
 crearTabla();
 controlarEnvio();
-
 }
 
 function crearTabla(){
-
 let html="";
 
 dias.forEach(d=>{
-
 html+=`
 <tr>
 <td><span class="dia-badge">${d}</span></td>
 <td><textarea id="${d}-lectura"></textarea></td>
 <td><textarea id="${d}-oracion"></textarea></td>
 <td><textarea id="${d}-dios"></textarea></td>
-</tr>
-`;
-
+</tr>`;
 });
 
 document.getElementById("tabla").innerHTML=html;
-
 }
 
 function guardar(){
-
 let data={};
 
 dias.forEach(d=>{
-
 data[d]={
 lectura:document.getElementById(d+"-lectura").value,
 oracion:document.getElementById(d+"-oracion").value,
 dios:document.getElementById(d+"-dios").value
 }
-
 });
 
 data["peticion"]=document.getElementById("peticion").value;
 
 localStorage.setItem("datos",JSON.stringify(data));
-
 alert("Progreso guardado");
-
 }
 
 function cargarDatos(){
-
 let datos=JSON.parse(localStorage.getItem("datos"));
 if(!datos) return;
 
@@ -399,62 +348,41 @@ document.getElementById(d+"-dios").value=datos[d].dios || "";
 });
 
 document.getElementById("peticion").value=datos["peticion"] || "";
-
 }
 
-/* CONTROL ENVÍO */
-
 function controlarEnvio(){
-
 let tiempoGuardado=localStorage.getItem("tiempoEnvio");
 
 if(tiempoGuardado){
-
-let ahora=Date.now();
-let diferencia=ahora-parseInt(tiempoGuardado);
+let diferencia=Date.now()-parseInt(tiempoGuardado);
 
 if(diferencia<60000){
-
 bloquearBoton();
-
-let restante=60000-diferencia;
-
-setTimeout(()=>{desbloquearBoton();},restante);
-
+setTimeout(desbloquearBoton,60000-diferencia);
 }
-
 }
-
 }
 
 function bloquearBoton(){
-
 let btn=document.querySelector(".enviar");
-
+if(!btn) return;
 btn.disabled=true;
-btn.innerText="Ya se ha enviado el devocional";
+btn.innerText="Ya se ha enviado tu devocional";
 btn.style.background="gray";
-
 }
 
 function desbloquearBoton(){
-
 let btn=document.querySelector(".enviar");
-
+if(!btn) return;
 btn.disabled=false;
 btn.innerText="Enviar";
 btn.style.background="linear-gradient(135deg,#1f6fb2,#0b3d91)";
-
 localStorage.removeItem("tiempoEnvio");
-
 }
-
-/* ENVIAR */
 
 function enviar(){
 
 let btn=document.querySelector(".enviar");
-
 btn.disabled=true;
 btn.innerText="Enviando...";
 btn.style.background="gray";
@@ -466,17 +394,14 @@ let errorOracion=false;
 let peticion=document.getElementById("peticion").value;
 
 dias.forEach(d=>{
-
 let lectura=document.getElementById(d+"-lectura").value.trim();
 let oracion=document.getElementById(d+"-oracion").value.trim();
 let dios=document.getElementById(d+"-dios").value.trim();
 
 if(!lectura || !oracion || !dios) incompleto=true;
-
-if(!/^\d+$/.test(oracion)) errorOracion=true;
+if(!/^[1-9]\d*$/.test(oracion)) errorOracion=true;
 
 datos.push({usuario,dia:d,lectura,oracion,dios,peticion});
-
 });
 
 if(incompleto){
@@ -486,24 +411,28 @@ return;
 }
 
 if(errorOracion){
-alert("No puedes escribir letras en oración");
+alert("La oración debe ser contestada solo con números");
 desbloquearBoton();
 return;
 }
 
-fetch("https://script.google.com/macros/s/AKfycbyPHJZ1WwdLSfnYCKoJmv2-r3iLS7Za7DBw-9BE-x5yFtuY_io_426fdFOPCd6cY1xnTw/exec",{
-method:"POST",
-body:JSON.stringify(datos)
+fetch("https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_6FAH1b2FGNOEbcxf5SXZgc7NffPRVH7hHdog/exec", {
+method: "POST",
+mode: "no-cors",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify(datos)
 })
-.then(r=>r.text())
 .then(()=>{
 alert("Enviado correctamente");
 localStorage.setItem("tiempoEnvio",Date.now());
 bloquearBoton();
 localStorage.removeItem("datos");
 })
-.catch(()=>{
-alert("Error al enviar");
+.catch(err=>{
+console.error(err);
+alert("Error de conexión");
 desbloquearBoton();
 });
 
