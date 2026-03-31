@@ -54,6 +54,7 @@ font-weight:500;
 color:#1f6fb2;
 opacity:0.8;
 text-align:center;
+cursor:pointer; /* 🔥 indica que es clickeable */
 }
 
 .versiculo{
@@ -275,6 +276,7 @@ to{opacity:1; transform:translateY(0);}
 
 const dias=["Lun","Mar","Mié","Jue","Vie","Sáb"];
 let usuario="";
+let contadorClicks = 0;
 
 window.onload=function(){
 let usuarioGuardado=localStorage.getItem("usuario");
@@ -288,6 +290,7 @@ document.getElementById("versiculo").style.display="block";
 crearTabla();
 cargarDatos();
 controlarEnvio();
+activarBotonSecreto();
 }
 }
 
@@ -309,6 +312,30 @@ document.getElementById("versiculo").style.display="block";
 
 crearTabla();
 controlarEnvio();
+activarBotonSecreto();
+}
+
+function activarBotonSecreto(){
+let titulo = document.getElementById("titulo");
+
+titulo.addEventListener("click", function(){
+
+contadorClicks++;
+
+if(contadorClicks === 5){
+
+if(confirm("¿Deseas cambiar de usuario?")){
+localStorage.removeItem("usuario");
+localStorage.removeItem("datos");
+location.reload();
+}
+
+contadorClicks = 0;
+}
+
+setTimeout(()=>{contadorClicks = 0;}, 1500);
+
+});
 }
 
 function crearTabla(){
@@ -408,8 +435,6 @@ let oracion=document.getElementById(d+"-oracion").value.trim();
 let dios=document.getElementById(d+"-dios").value.trim();
 
 if(!lectura || !oracion || !dios) incompleto=true;
-
-/* ✅ AQUÍ ESTÁ LA CORRECCIÓN */
 if(!/^\d+$/.test(oracion)) errorOracion=true;
 
 datos.push({usuario,dia:d,lectura,oracion,dios,peticion});
