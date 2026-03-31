@@ -81,8 +81,6 @@ table{
 width:100%;
 margin-top:25px;
 border-collapse:separate;
-
-/* 🔥 separación horizontal + vertical */
 border-spacing:12px 28px;
 }
 
@@ -93,21 +91,14 @@ font-weight:600;
 padding-bottom:10px;
 }
 
-tr{
-box-shadow:none;
-}
-
 td{
 padding:16px;
 vertical-align:top;
-
-/* 🔥 cada celda como tarjeta separada */
 background:white;
 border-radius:14px;
 box-shadow:0 8px 18px rgba(0,0,0,0.05);
 }
 
-/* 🔥 columna de días más angosta */
 td:first-child{
 width:50px;
 min-width:50px;
@@ -206,23 +197,18 @@ background:linear-gradient(135deg,#1f6fb2,#0b3d91);
 color:white;
 }
 
-/* 📱 ajuste móvil */
 @media (max-width:768px){
-
 td{
 padding:10px;
 }
-
 textarea{
 height:70px;
 font-size:12px;
 }
-
 td:first-child{
 width:45px;
 min-width:45px;
 }
-
 }
 
 @keyframes fadeIn{
@@ -422,7 +408,9 @@ let oracion=document.getElementById(d+"-oracion").value.trim();
 let dios=document.getElementById(d+"-dios").value.trim();
 
 if(!lectura || !oracion || !dios) incompleto=true;
-if(!/^[1-9]\d*$/.test(oracion)) errorOracion=true;
+
+/* ✅ AQUÍ ESTÁ LA CORRECCIÓN */
+if(!/^\d+$/.test(oracion)) errorOracion=true;
 
 datos.push({usuario,dia:d,lectura,oracion,dios,peticion});
 });
