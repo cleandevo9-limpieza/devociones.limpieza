@@ -28,6 +28,31 @@ box-shadow:0 20px 40px rgba(0,0,0,0.08);
 animation:fadeIn 0.6s ease;
 }
 
+.tabs{
+display:flex;
+background:#eef5ff;
+border-radius:14px;
+padding:4px;
+gap:4px;
+margin-bottom:15px;
+}
+
+.tab{
+flex:1;
+text-align:center;
+padding:8px;
+border-radius:10px;
+font-size:13px;
+cursor:pointer;
+color:#1f6fb2;
+font-weight:500;
+}
+
+.tab.active{
+background:white;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+
 .header{
 text-align:center;
 margin-bottom:30px;
@@ -54,7 +79,7 @@ font-weight:500;
 color:#1f6fb2;
 opacity:0.8;
 text-align:center;
-cursor:pointer; /* 🔥 indica que es clickeable */
+cursor:pointer;
 }
 
 .versiculo{
@@ -135,6 +160,11 @@ outline:none;
 border:1px solid #4da3ff;
 background:white;
 box-shadow:0 0 0 2px rgba(77,163,255,0.2);
+}
+
+textarea.readonly{
+background:#f0f0f0;
+pointer-events:none;
 }
 
 .peticion{
@@ -224,6 +254,11 @@ to{opacity:1; transform:translateY(0);}
 
 <div class="container">
 
+<div class="tabs" id="tabs" style="display:none;">
+<div class="tab active" onclick="cambiarVista('actual', this)">Semana actual</div>
+<div class="tab" onclick="cambiarVista('anterior', this)">Semana anterior</div>
+</div>
+
 <div class="header">
 <h1>Ministerio de Limpieza</h1>
 <h2>Registro Devocional Semanal</h2>
@@ -276,7 +311,8 @@ to{opacity:1; transform:translateY(0);}
 
 const dias=["Lun","Mar","Mié","Jue","Vie","Sáb"];
 let usuario="";
-let contadorClicks = 0;
+let contadorClicks=0;
+let vista="actual";
 
 window.onload=function(){
 let usuarioGuardado=localStorage.getItem("usuario");
@@ -285,8 +321,11 @@ if(usuarioGuardado){
 usuario=usuarioGuardado;
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
+document.getElementById("tabs").style.display="flex";
+
 document.getElementById("titulo").innerText="Usuario: "+usuario;
 document.getElementById("versiculo").style.display="block";
+
 crearTabla();
 cargarDatos();
 controlarEnvio();
@@ -306,6 +345,7 @@ localStorage.setItem("usuario",usuario);
 
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
+document.getElementById("tabs").style.display="flex";
 
 document.getElementById("titulo").innerText="Usuario: "+usuario;
 document.getElementById("versiculo").style.display="block";
@@ -315,32 +355,46 @@ controlarEnvio();
 activarBotonSecreto();
 }
 
-function activarBotonSecreto(){
-let titulo = document.getElementById("titulo");
+function cambiarVista(tipo, el){
+vista=tipo;
 
-titulo.addEventListener("click", function(){
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+el.classList.add("active");
 
-contadorClicks++;
-
-if(contadorClicks === 5){
-
-if(confirm("¿Deseas cambiar de usuario?")){
-localStorage.removeItem("usuario");
-localStorage.removeItem("datos");
-location.reload();
+if(tipo==="actual"){
+cargarDatos();
+bloquearEdicion(false);
+}else{
+cargarAnterior();
+bloquearEdicion(true);
+}
 }
 
-contadorClicks = 0;
+function bloquearEdicion(estado){
+document.querySelectorAll("textarea").forEach(t=>{
+if(estado){
+t.classList.add("readonly");
+}else{
+t.classList.remove("readonly");
 }
-
-setTimeout(()=>{contadorClicks = 0;}, 1500);
-
 });
+}
+
+function cargarAnterior(){
+let datos=JSON.parse(localStorage.getItem("semanaAnterior"));
+if(!datos) return;
+
+dias.forEach(d=>{
+document.getElementById(d+"-lectura").value=datos[d]?.lectura||"";
+document.getElementById(d+"-oracion").value=datos[d]?.oracion||"";
+document.getElementById(d+"-dios").value=datos[d]?.dios||"";
+});
+
+document.getElementById("peticion").value=datos["peticion"]||"";
 }
 
 function crearTabla(){
 let html="";
-
 dias.forEach(d=>{
 html+=`
 <tr>
@@ -350,7 +404,6 @@ html+=`
 <td><textarea id="${d}-dios"></textarea></td>
 </tr>`;
 });
-
 document.getElementById("tabla").innerHTML=html;
 }
 
@@ -376,14 +429,12 @@ let datos=JSON.parse(localStorage.getItem("datos"));
 if(!datos) return;
 
 dias.forEach(d=>{
-if(datos[d]){
-document.getElementById(d+"-lectura").value=datos[d].lectura || "";
-document.getElementById(d+"-oracion").value=datos[d].oracion || "";
-document.getElementById(d+"-dios").value=datos[d].dios || "";
-}
+document.getElementById(d+"-lectura").value=datos[d]?.lectura||"";
+document.getElementById(d+"-oracion").value=datos[d]?.oracion||"";
+document.getElementById(d+"-dios").value=datos[d]?.dios||"";
 });
 
-document.getElementById("peticion").value=datos["peticion"] || "";
+document.getElementById("peticion").value=datos["peticion"]||"";
 }
 
 function controlarEnvio(){
@@ -401,7 +452,6 @@ setTimeout(desbloquearBoton,60000-diferencia);
 
 function bloquearBoton(){
 let btn=document.querySelector(".enviar");
-if(!btn) return;
 btn.disabled=true;
 btn.innerText="Ya se ha enviado tu devocional";
 btn.style.background="gray";
@@ -409,7 +459,6 @@ btn.style.background="gray";
 
 function desbloquearBoton(){
 let btn=document.querySelector(".enviar");
-if(!btn) return;
 btn.disabled=false;
 btn.innerText="Enviar";
 btn.style.background="linear-gradient(135deg,#1f6fb2,#0b3d91)";
@@ -452,26 +501,66 @@ desbloquearBoton();
 return;
 }
 
+// guardar semana anterior
+let dataGuardar={};
+dias.forEach(d=>{
+dataGuardar[d]={
+lectura:document.getElementById(d+"-lectura").value,
+oracion:document.getElementById(d+"-oracion").value,
+dios:document.getElementById(d+"-dios").value
+}
+});
+dataGuardar["peticion"]=peticion;
+localStorage.setItem("semanaAnterior",JSON.stringify(dataGuardar));
+
+// enviar
 fetch("https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_6FAH1b2FGNOEbcxf5SXZgc7NffPRVH7hHdog/exec", {
-method: "POST",
-mode: "no-cors",
-headers: {
-"Content-Type": "application/json"
+method:"POST",
+mode:"no-cors",
+headers:{
+"Content-Type":"application/json"
 },
-body: JSON.stringify(datos)
+body:JSON.stringify(datos)
 })
 .then(()=>{
 alert("Enviado correctamente");
+
 localStorage.setItem("tiempoEnvio",Date.now());
-bloquearBoton();
+
+btn.disabled=true;
+btn.innerText="Ya se ha enviado tu devocional";
+btn.style.background="gray";
+
 localStorage.removeItem("datos");
 })
-.catch(err=>{
-console.error(err);
+.catch(()=>{
 alert("Error de conexión");
 desbloquearBoton();
 });
 
+}
+
+function activarBotonSecreto(){
+let titulo = document.getElementById("titulo");
+
+titulo.addEventListener("click", function(){
+
+contadorClicks++;
+
+if(contadorClicks === 5){
+
+if(confirm("¿Deseas cambiar de usuario?")){
+localStorage.removeItem("usuario");
+localStorage.removeItem("datos");
+location.reload();
+}
+
+contadorClicks = 0;
+}
+
+setTimeout(()=>{contadorClicks = 0;}, 1500);
+
+});
 }
 
 </script>
